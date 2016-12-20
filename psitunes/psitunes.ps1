@@ -249,7 +249,7 @@ function Show-itunes_psf {
 				$script:songchanged = $current.name
 				$rowindex = ($datagridview1.Rows | ?{ $_.Cells[0].Value -eq $songchanged }).index
 				$datagridview1.Rows[$RowIndex].Cells[0].Selected = $true
-				$datagridview1.Rows | ? { $_.Index -ne $rowindex } | %{ $_.Selected = $false }
+		
 			}
 			
 			if ($albumchanged -ne $current.album) {
