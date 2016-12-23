@@ -219,7 +219,7 @@ function Show-itunes_psf {
 	
 	function load-queue {
 		
-		param ($search,$artist)
+		param ($search)
 		
 			$script:queue = $libraryplaylist.search($search, $this.ITPlaylistSearchField.ITPlaylistSearchFieldalbums)
 			$dt = $queue | Select Name, @{
