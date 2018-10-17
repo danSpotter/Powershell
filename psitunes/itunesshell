@@ -1,0 +1,57 @@
+
+
+function play-itunes {
+	
+	param($genre)
+	
+	start-job -name itunes -scriptblock {
+		
+		param($genre)
+		
+		$iTunes = New-Object -ComObject iTunes.Application
+		$LibrarySource = $iTunes.sources.ItemByName('Library')
+		$libraryplaylist = $librarysource.playlists.itembyname('Dan''s Music')
+		$category = $libraryplaylist.search($genre, $this.ITPlaylistSearchField.ITPlaylistSearchFieldgenre)
+		$songstoplay =  $category | sort {get-random}
+		
+		foreach ($song in $songstoplay) {
+			
+			$song.play()
+			
+			$host.ui.rawui.windowtitle = "Now playing -- " + $song.name
+			
+			$total = $song.duration + 5
+			
+			start-sleep -seconds $total
+			
+			$host.ui.rawui.windowtitle = "Windows Powershell"
+			
+		}
+		
+		
+	} -argumentlist $genre | out-null
+	
+	
+	if (!($timer)) {
+		
+		$timer = new-object timers.timer
+		
+		$action = {
+			
+			$Global:windowtitle = receive-job -name itunes -keep
+		}
+		
+		$timer.Interval = 10000
+		
+		$Timer.Enabled = $True
+		
+		Register-ObjectEvent -InputObject $timer -EventName elapsed `
+							 –SourceIdentifier ItunesTimer -Action $action | Out-Null
+		
+		$Timer.Start()
+		
+		
+	}
+	
+}
+
