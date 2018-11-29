@@ -1,0 +1,44 @@
+
+
+function get-cooktemp {
+	
+	start-job -name TempMonitor -scriptblock {
+		
+		while($true){
+		
+		$r = invoke-restmethod -uri 'http://192.168.1.225/status.xml'
+
+		$pittemp = $r.nutcstatus.cook_temp/10
+		
+		$host.ui.rawui.windowtitle = "Big Green Egg - " + $pittemp + [char]0176
+
+		sleep 5
+			
+		}
+		
+	} | out-null
+	
+	
+	if (!($timer)) {
+		
+		$timer = new-object timers.timer
+		
+		$action = {
+			
+			$Global:windowtitle = receive-job -name tempmonitor -keep
+		}
+		
+		$timer.Interval = 5000
+		
+		$Timer.Enabled = $True
+		
+		Register-ObjectEvent -InputObject $timer -EventName elapsed `
+							 –SourceIdentifier temptimer -Action $action | Out-Null
+		
+		$Timer.Start()
+		
+		
+	}
+	
+}
+
