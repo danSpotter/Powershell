@@ -1,0 +1,8 @@
+$conn = New-Object System.Data.SqlClient.SqlConnection("Server=mysqlserver; Database='database'; Integrated Security=TRUE")
+$conn.Open()
+$cmd = $conn.CreateCommand()
+$cmd.CommandText = "storedprocedurename"
+$adapter = New-Object System.Data.SqlClient.SqlDataAdapter($cmd)
+$dataset = New-Object System.Data.DataSet
+[void]$adapter.Fill($dataset)
+$dataset.tables[0] 
