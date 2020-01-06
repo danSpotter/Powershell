@@ -1,0 +1,17 @@
+$output = foreach($nsg in $nsgs){
+
+$rules = $nsg.SecurityRules
+
+foreach($rule in $rules){
+
+[pscustomobject]@{
+
+nsgname = $nsg.name
+rulename = $rule.name
+matches = (compare $rule.sourceaddressprefix $ips -IncludeEqual  | ? {$_.sideindicator -eq '=='}).inputobject
+
+}
+
+}
+
+}
