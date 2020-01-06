@@ -8,7 +8,8 @@ foreach($rule in $rules){
 
 nsgname = $nsg.name
 rulename = $rule.name
-matches = (compare $rule.sourceaddressprefix $ips -IncludeEqual  | ? {$_.sideindicator -eq '=='}).inputobject
+source = (compare $rule.sourceaddressprefix $ips -IncludeEqual  | ? {$_.sideindicator -eq '=='}).inputobject
+destination = (compare $rule.DestinationAddressPrefix $ips -IncludeEqual  | ? {$_.sideindicator -eq '=='}).inputobject
 
 }
 
