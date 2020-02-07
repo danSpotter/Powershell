@@ -1,0 +1,49 @@
+function Connect-SCserver {
+
+		[CmdletBinding()]
+		param (
+		[Parameter(Mandatory = $True)]
+		[String]$tenableserver
+
+		)
+	
+	if(-not($tenablecred)){
+		
+		$tenablecred = Get-Credential -Message "Tenable Credential:"
+		
+		$tb = [pscustomobject]@{
+			
+			username = $tenablecred.username
+			password = $tenablecred.getnetworkcredential().password
+			
+		} | convertto-json -compress
+		
+    }
+	
+	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+	$login = Invoke-RestMethod -URI https://$tenableserver/rest/token -Method POST -Body $tb -UseBasicParsing -SessionVariable global:sv
+	$global:sctoken = $login.response.token
+	
+	$login.response
+	
+}
+
+
+
+function Start-SCscan{
+	
+	[CmdletBinding()]
+	param (
+		
+		[Parameter(Mandatory = $True)]
+		[String]$ScanID
+		
+	)
+	
+	Write-Host "Starting scan $($scanid)"
+	
+	$startscan = Invoke-RestMethod -URI "https://$tenableserver/rest/scan/$($scanid)/launch" -UseBasicParsing -Headers @{ "X-SecurityCenter" = "$sctoken" } -Websession $sv -Method Post
+	
+	$startscan.response.scanResult
+	
+}
