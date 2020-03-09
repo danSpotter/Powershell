@@ -1,0 +1,55 @@
+
+function get-dow {
+	
+	start-job -name DOWMonitor -scriptblock {
+		
+		while($true){
+		
+		$r = invoke-restmethod -uri 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=djia&apikey=8R092KUKQIY2X0LQ'
+
+		$djia = $r.'Time Series (Daily)'
+
+		$lasttwo = ($djia|gm -MemberType noteproperty|select -Last 2).name
+
+		$lastclose = $djia.$($lasttwo[0]).'4. close'
+
+		$current = $djia.$($lasttwo[1]).'4. close'
+
+		$diff = $current - $lastclose
+
+		if($diff -lt 0){
+
+		$host.ui.rawui.windowtitle = "Trump economy - DJIA: $diff" 
+		
+		}else{$host.ui.rawui.windowtitle = "Thanks Obama! - DJIA: $diff"}
+
+		sleep 30
+			
+		}
+		
+	} | out-null
+	
+	
+	if (!($timer)) {
+		
+		$timer = new-object timers.timer
+		
+		$action = {
+			
+			$Global:windowtitle = receive-job -name DOWmonitor -keep
+		}
+		
+		$timer.Interval = 5000
+		
+		$Timer.Enabled = $True
+		
+		Register-ObjectEvent -InputObject $timer -EventName elapsed `
+							 –SourceIdentifier dowtimer -Action $action | Out-Null
+		
+		$Timer.Start()
+		
+		
+	}
+	
+}
+
