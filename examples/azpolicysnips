@@ -1,0 +1,17 @@
+{
+    "if": {
+        "not": {
+            "field": "tags.Financial",
+            "in": [
+                "TAZCore",
+                "ITDept",
+		            "something"
+            ]
+        }
+    },
+    "then": {
+        "effect": "deny"
+    }
+}
+
+New-AzureRmPolicyDefinition -Name 'testtagvalues' -Policy .\tagpolicy.json
