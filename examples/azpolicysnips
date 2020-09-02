@@ -1,17 +1,25 @@
 {
-    "if": {
+"if": {
+    "allOf": [{
         "not": {
             "field": "tags.Financial",
             "in": [
                 "TAZCore",
                 "ITDept",
-		            "something"
+                "something"
             ]
+              }
+        },
+        {
+            "field": "type",
+            "equals": "Microsoft.Resources/subscriptions/resourceGroups"
         }
-    },
-    "then": {
-        "effect": "deny"
-    }
+    ]
+},
+"then": {
+    "effect": "deny"
+}
+
 }
 
 New-AzureRmPolicyDefinition -Name 'testtagvalues' -Policy .\tagpolicy.json
