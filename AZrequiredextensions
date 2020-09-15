@@ -1,0 +1,8 @@
+Microsoft.Azure.Security.AzureDiskEncryption
+Microsoft.AzureSecurity.JITAccess.VMJITAccessExtension
+Microsoft.Compute.BGInfo
+Microsoft.Compute.CustomScriptExtension
+Microsoft.Compute.JsonADDomainExtension
+Microsoft.Compute.VMAccessAgent
+Microsoft.EnterpriseCloud.Monitoring.MicrosoftMonitoringAgent
+Microsoft.Powershell.DSC
