@@ -12,10 +12,16 @@ VM = $vm.name
 Resourcegroup = $vm.resourcegroupname
 InstalledExtensions = $extensions.extensiontype
 MissingExtensions = $requiredext | ? {$_ -notin $extenstions.extensiontype}
+FailedExtensions = ($extensions| ?{ $_.ProvisioningState -eq 'Failed'}).extensiontype
+UpdateAvailable = ''
 
 }
 
 }
+
+
+
+
 
 
 AzureDiskEncryption
