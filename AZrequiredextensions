@@ -1,8 +1,28 @@
-Microsoft.Azure.Security.AzureDiskEncryption
-Microsoft.AzureSecurity.JITAccess.VMJITAccessExtension
-Microsoft.Compute.BGInfo
-Microsoft.Compute.CustomScriptExtension
-Microsoft.Compute.JsonADDomainExtension
-Microsoft.Compute.VMAccessAgent
-Microsoft.EnterpriseCloud.Monitoring.MicrosoftMonitoringAgent
-Microsoft.Powershell.DSC
+$requiredext = Get-Content .\requiredext.txt
+
+$vms = get-azvm 
+  
+$output = Foreach($vm in $vms){
+
+$extensions =  get-azvmextension -resourcegroupname $vm.resourcegroupname -vmname $vm.name
+
+[pscustomobject]@{
+
+VM = $vm.name
+Resourcegroup = $vm.resourcegroupname
+InstalledExtensions = $extensions.extensiontype
+MissingExtensions = $requiredext | ? {$_ -notin $extenstions.extensiontype}
+
+}
+
+}
+
+
+AzureDiskEncryption
+VMJITAccessExtension
+BGInfo
+MCustomScriptExtension
+JsonADDomainExtension
+VMAccessAgent
+MicrosoftMonitoringAgent
+DSC
