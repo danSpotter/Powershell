@@ -1,4 +1,46 @@
-$requiredext = Get-Content .\requiredext.txt
+
+$requiredextensions = @"
+
+[
+    {
+        "Type":  "BGInfo",
+        "Publisher":  "Microsoft.Compute"
+    },
+    {
+        "Type":  "NetworkWatcherAgentWindows",
+        "Publisher":  "Microsoft.Azure.NetworkWatcher"
+    },
+    {
+        "Type":  "VMAccessAgent",
+        "Publisher":  "Microsoft.Compute"
+    },
+    {
+        "Type":  "VMJITAccessExtension",
+        "Publisher":  "Microsoft.AzureSecurity.JITAccess"
+    },
+    {
+        "Type":  "MicrosoftMonitoringAgent",
+        "Publisher":  "Microsoft.EnterpriseCloud.Monitoring"
+    },
+    {
+        "Type":  "JsonADDomainExtension",
+        "Publisher":  "Microsoft.Compute"
+    },
+    {
+        "Type":  "CustomScriptExtension",
+        "Publisher":  "Microsoft.Compute"
+    },
+    {
+        "Type":  "AzureDiskEncryption",
+        "Publisher":  "Microsoft.Azure.Security"
+    }
+]
+
+                      
+"@
+
+
+$requiredext = $requiredextensions | convertfrom-json
 
 $vms = get-azvm 
   
@@ -6,29 +48,19 @@ $output = Foreach($vm in $vms){
 
 $extensions =  get-azvmextension -resourcegroupname $vm.resourcegroupname -vmname $vm.name
 
+$missing = $requiredext.type | ? {$_ -notin $extensions.extensiontype}
+
 [pscustomobject]@{
 
 VM = $vm.name
 Resourcegroup = $vm.resourcegroupname
-InstalledExtensions = $extensions.extensiontype
-MissingExtensions = $requiredext | ? {$_ -notin $extenstions.extensiontype}
-FailedExtensions = ($extensions| ?{ $_.ProvisioningState -eq 'Failed'}).extensiontype
+InstalledExtensions = $extensions.extensiontype -join ', '
+MissingExtensions = $missing -join ', '
+MissingCount = $missing.count
+FailedExtensions = ($extensions| ?{ $_.ProvisioningState -eq 'Failed'}).extensiontype -join ', '
 UpdateAvailable = ''
 
 }
 
 }
 
-
-
-
-
-
-AzureDiskEncryption
-VMJITAccessExtension
-BGInfo
-MCustomScriptExtension
-JsonADDomainExtension
-VMAccessAgent
-MicrosoftMonitoringAgent
-DSC
