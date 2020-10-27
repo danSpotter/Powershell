@@ -1,1 +1,127 @@
+$fecapikey = 'JH9c00blDyBW7bIvle7rsQVWeZSqRDmJPCA7ddcN'
+
+$tb = @{
+cycle = 2020
+api_key = $fecapikey
+candidate_id = "S6ME00159"
+}
+
+$t = "https://api.open.fec.gov/v1/schedules/schedule_a/by_size/by_candidate/"
+$rest = invoke-restmethod -uri $t -body $tb -method GET
+
+
+$tb = @{
+cycle = 2020
+api_key = $fecapikey
+#contributor_name = "MARCUS, BERNARD"
+per_page = 100
+min_date = (get-date).addmonths(-3)
+sort = '-contribution_receipt_amount'
+}
+
+$t = "https://api.open.fec.gov/v1/schedules/schedule_a/"
+$rest = invoke-restmethod -uri $t -body $tb -method GET
+
+
+$rest.results | select committee_id,contributor_name,contributor_state,contributor_employer,contribution_receipt_amount,entity_type |ft
+
+
+
+
+
+
+#spending
+
+$tb = @{
+cycle = 2020
+committee_id = "C00314575"
+api_key = $fecapikey
+}
+
+$tb = @{
+cycle = 2020
+api_key = $fecapikey
+per_page = 100
+sort = '-total'
+}
+
+
+$t = "https://api.open.fec.gov/v1/committee/C00370056/schedules/schedule_b/"
+$rest = invoke-restmethod -uri $t -body $tb -method GET
+
+$grouped = $rest.results | group recipient_name
+
+$t = "https://api.open.fec.gov/v1/committee/C00370056/schedules/schedule_b/by_purpose/"
+$rest = invoke-restmethod -uri $t -body $tb -method GET
+
+
+
+$tb = @{
+cycle = 2020
+api_key = $fecapikey
+per_page = 100
+committee_id = 'C00695510'
+sort = '-disbursement_amount'
+min_date = (get-date).addmonths(-6)
+}
+
+$t = "https://api.open.fec.gov/v1/schedules/schedule_b/"
+$rest = invoke-restmethod -uri $t -body $tb -method GET
+
+$grouped = $rest.results | group recipient_name
+
+$rest.results | select entity_type_desc,recipient_name,recipient_city,category_code_full,disbursement_amount,disbursement_description,@{n='committeename';e={$_.committee.name}},@{n='party';e={$_.committee.party}}  | ? {$_.disbursement_description -match 'food'} |ft| sort disbursement_amount -descending |ft
+
+
+
+$fecapikey = 'JH9c00blDyBW7bIvle7rsQVWeZSqRDmJPCA7ddcN'
+
+$tb = @{
+
+api_key = $fecapikey
+committee_id = 'C00700427'
+per_page = 100
+min_date = (get-date).addmonths(-12)
+sort = '-contribution_receipt_amount'
+}
+
+$t = "https://api.open.fec.gov/v1/schedules/schedule_a/"
+$rest = invoke-restmethod -uri $t -body $tb -method GET
+
+
+$rest.results | select committee_id,contributor_name,contributor_state,contributor_employer,contribution_receipt_amount,entity_type,fec_election_type_desc,@{n='committeename';e={$_.committee.name}},@{n='party';e={$_.committee.party}} |ft
+
+
+
+
+
+$tb = @{
+
+api_key = $fecapikey
+per_page = 100
+contributor_name = 'COLLINS-GRAHAM MAJORITY COMMITTEE'
+min_date = (get-date).addmonths(-12)
+sort = '-disbursement_amount'
+}
+
+$t = "https://api.open.fec.gov/v1/schedules/schedule_b/"
+$rest = invoke-restmethod -uri $t -body $tb -method GET
+
+
+$rest.results | select @{n='committeename';e={$_.committee.name}},transaction_id,recipient_name,recipient_city,category_code_full,disbursement_amount,disbursement_description |ft
+
+
+
+
+
+
+
+
+
+Invoke-WebRequest -Uri "https://api.open.fec.gov/v1/schedules/schedule_b/?api_key=5yyI90SU3Xb73TVlv4wrEhQxYcCwMWCywQiGdYbJ&sort_hide_null=false&sort_nulls_last=false&data_type=processed&recipient_name=trump&two_year_transaction_period=2020&min_date=01%2F01%2F2019&max_date=12%2F31%2F2020&sort=-disbursement_date&per_page=30" -Headers @{"Accept"="application/json, text/javascript, */*; q=0.01"; "Referer"="https://www.fec.gov/data/disbursements/?data_type=processed&recipient_name=trump&two_year_transaction_period=2020&min_date=01%2F01%2F2019&max_date=12%2F31%2F2020"; "Origin"="https://www.fec.gov"; "User-Agent"="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36"}
+
+
+
+
+
 
