@@ -17,11 +17,7 @@ function get-dow {
 
 		$diff = $current - $lastclose
 
-		if($diff -lt 0){
-
-		$host.ui.rawui.windowtitle = "Trump economy - DJIA: $diff" 
-		
-		}else{$host.ui.rawui.windowtitle = "Thanks Obama! - DJIA: $diff"}
+		$host.ui.rawui.windowtitle = "DJIA: $diff"
 
 		sleep 30
 			
