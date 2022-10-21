@@ -1,0 +1,71 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "VMname": {
+            "type": "string"
+        },
+        "TemplateSasToken": {
+            "type": "securestring",
+            "metadata": {
+                "description": "The SAS Token to access the DSC resource"
+            }
+        },
+        "BinariesUrl": {
+            "type": "string"
+        },
+        "BinariesSasToken": {
+            "type": "securestring"
+        },
+        "FileName": {
+            "type": "string"
+        },
+        "Timestamp": {
+            "type": "string",
+            "defaultValue": "MM/dd/yyyy H:mm:ss tt",
+            "metadata": {
+                "description": "The current datetime, as a string, to force the request to go through ARM even if all fields are the same as last ARM deployment of this template."
+            }
+        }
+    },
+    "variables": {
+        "TemplateName": "InstallAgentSoftware"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(parameters('VMname'), '/DSC')]",
+            "apiVersion": "2018-10-01",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "SourceTemplate": "SOE-C"
+            },
+            "properties": {
+                "publisher": "Microsoft.Powershell",
+                "type": "DSC",
+                "forceUpdateTag": "[parameters('timeStamp')]",
+                "typeHandlerVersion": "2.76",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "wmfVersion": "latest",
+                    "configuration": {
+                        "url": "[uri(deployment().properties.templateLink.uri, concat(variables('TemplateName'),'.zip'))]",
+                        "script": "[concat(variables('TemplateName'), '.ps1')]",
+                        "function": "[variables('TemplateName')]"
+                    },
+                    "configurationArguments": {
+
+                    }
+                },
+                "protectedSettings": {
+                    "configurationArguments": {
+
+                        "InstallFilesUri": "[uri(parameters('BinariesUrl'), concat(parameters('FileName'), parameters('BinariesSasToken')))]"
+                        
+                    },
+                    "configurationUrlSasToken": "[parameters('TemplateSasToken')]"
+                }
+            }
+        }
+    ]
+}
