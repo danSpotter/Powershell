@@ -1,0 +1,35 @@
+ Registry TLS1.0-Client {
+            Key       = 'HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.0\Client'
+            ValueName = 'DisabledByDefault'
+            ValueData = 0
+            ValueType = 'Dword'
+            Ensure    = 'Present'
+            
+        }
+        
+        Registry TLS1.0-Server {
+            Key       = 'HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.0\Server'
+            ValueName = 'DisabledByDefault'
+            ValueData = 0
+            ValueType = 'Dword'
+            Ensure    = 'Present'
+            
+        }
+        
+        Registry TLS1.1-Client {
+            Key       = 'HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.1\Client'
+            ValueName = 'DisabledByDefault'
+            ValueData = 0
+            ValueType = 'Dword'
+            Ensure    = 'Present'
+            
+        }
+        
+        Registry TLS1.1-Server {
+            Key       = 'HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.1\Server'
+            ValueName = 'DisabledByDefault'
+            ValueData = 0
+            ValueType = 'Dword'
+            Ensure    = 'Present'
+            
+        }
